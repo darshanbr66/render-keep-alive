@@ -1,0 +1,15 @@
+name: Render Keep Alive
+
+on:
+  schedule:
+    - cron: "*/10 * * * *"
+  workflow_dispatch:
+
+jobs:
+  keep-alive:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Ping Render services
+        run: |
+          curl -f "${{ secrets.RENDER_URL }}"
