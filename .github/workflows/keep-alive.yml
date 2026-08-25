@@ -11,12 +11,15 @@ jobs:
 
     steps:
       - name: Ping Render services
-        env:
-          RENDER_URLS: ${{ secrets.RENDER_URLS }}
         run: |
           status=0
 
-          while IFS= read -r url; do
+          urls=(
+            "${{ secrets.RENDER_URL_1 }}"
+            "${{ secrets.RENDER_URL_2 }}"
+          )
+
+          for url in "${urls[@]}"; do
             [ -z "$url" ] && continue
 
             echo "Pinging: $url"
@@ -27,6 +30,6 @@ jobs:
               echo "Failed: $url"
               status=1
             fi
-          done <<< "$RENDER_URLS"
+          done
 
           exit $status
