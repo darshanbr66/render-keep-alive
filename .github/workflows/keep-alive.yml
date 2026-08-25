@@ -11,25 +11,28 @@ jobs:
 
     steps:
       - name: Ping Render services
+        env:
+          RENDER_URLS: ${{ secrets.RENDER_URLS }}
         run: |
           status=0
 
-          urls=(
-            "${{ secrets.RENDER_URL_1 }}"
-            "${{ secrets.RENDER_URL_2 }}"
-          )
-
-          for url in "${urls[@]}"; do
+          while IFS= read -r url; do
             [ -z "$url" ] && continue
 
             echo "Pinging: $url"
 
-            if curl --fail --silent --show-error --max-time 30 "$url"; then
+            if curl --fail --silent --show-error \
+              --max-time 120 \
+              --retry 1 \
+              --retry-delay 5 \
+              "$url"; then
+
               echo "Success: $url"
             else
               echo "Failed: $url"
               status=1
             fi
-          done
+
+          done <<< "$RENDER_URLS"
 
           exit $status
