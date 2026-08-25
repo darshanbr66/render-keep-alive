@@ -2,7 +2,7 @@ name: Render Keep Alive
 
 on:
   schedule:
-    - cron: "*/10 * * * *"
+    - cron: "3/10 * * * *"
   workflow_dispatch:
 
 jobs:
@@ -12,4 +12,4 @@ jobs:
     steps:
       - name: Ping Render services
         run: |
-          curl -f "${{ secrets.RENDER_URL }}"
+          curl --fail --silent --show-error --max-time 30 "${{ secrets.RENDER_URL }}"
